@@ -73,10 +73,10 @@ class RestfulOneQ:
     def check_status(self, retry_count, waiting_status, status, previous_status, timeout, task_id):
         if retry_count == 0:
             print("During retry count = ", retry_count)
-            pytest.fail("Not enough retries. Retry count = ", retry_count)
+            assert False, "Not enough retries. Retry count = " + str(retry_count)
         elif status == waiting_status:
             print("The status is correct. During status = {}, waiting status = {}".format(status, waiting_status))
-            assert (True), "The status is correct. Task status =  " + str(status)
+            assert True, "The status is correct. Task status =  " + str(status)
             return
         elif status == previous_status:
             retry_count = retry_count - 1
@@ -87,7 +87,7 @@ class RestfulOneQ:
             # print("\nnew json_response" + str(json_response))
             self.check_status(retry_count, waiting_status, status, previous_status, timeout, task_id)
         else:
-            pytest.fail("Unknown task status = " + str(status))
+            assert False, "Unknown task status = " + str(status)
         # retry_status_100 = retry_count
 
 

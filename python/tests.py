@@ -82,7 +82,7 @@ class TestExample:
         assert response.status_code == 404, "Код запроса не равен ожидаемому 404. Код запроса = {}".format(response.status_code)
         assert jsonData['error'] == "Task not found", "Отсутствует ожидаемая ошбика 'Задача с id = '{}'' не найдена'".format(bad_id)
 
-    # @pytest.mark.in_progress
+    @pytest.mark.in_progress
     def test_check_task_statuses(self, client):
         # version_status = client.check_version()
         data = {
