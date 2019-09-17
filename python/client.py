@@ -10,11 +10,12 @@ retry_number = 12
 
 class RestfulOneQ:
 
-    _s = requests.session()
+    
     host = None
 
     def __init__(self, host):
         self.host = host
+        self._s = requests.session()
 
 
     def create_task(self, data: dict):
@@ -31,36 +32,38 @@ class RestfulOneQ:
 
         print("Version from response - " + response.json())
 
-        if(response.json() == good_version):
-            print("good_version_couter before increment = " + str(good_version_couter))
+        if response.json() == good_version:
+            print("good_version_couter before increment = ", good_version_couter)
             good_version_couter = good_version_couter + 1
-            print("good_version_couter after increment = " + str(good_version_couter))
+            print("good_version_couter after increment = ", good_version_couter)
 
-            if (good_version_couter >= limit):
+            if good_version_couter >= limit:
                 print("Version is giving up.")
             else:
-                print("Need to check version one more time. Retrying in " + str(retry_timeout) + "sec")
+                print("Need to check version one more time. Retrying in ", retry_timeout, "sec")
                 self.retry_it(retry_count)
-        else :
+        else:
             good_version_couter = 0
-            print("good_version_couter after zerroing = " + str(good_version_couter))
-            print("Version is still DEPLOY. Retrying in " + str(retry_timeout) + "ms")
+            print("good_version_couter after zerroing = ", good_version_couter)
+            print("Version is still DEPLOY. Retrying in ", retry_timeout, "ms")
             self.retry_it(retry_count)
 
 
+
     def retry_it(self, retry_count):
-        if (retry_count <= 1): 
-            print("Sorry, version is wrong and retry count = " + str(retry_count))
+        if retry_count <= 1: 
+            print("Sorry, version is wrong and retry count = ", retry_count)
+            assert False
             # postman.setNextRequest(null);
         else:
             time.sleep(retry_timeout)
             retry_count = retry_count - 1
-            print("During retry count = " + str(retry_count))
+            print("During retry count = ", retry_count)
             self.send_version(retry_count)
             
 
     def check_version(self):
-        if (good_version_couter >= limit):
+        if good_version_couter >= limit:
             print("Version is already giving up.")
             return
         else:
@@ -68,14 +71,14 @@ class RestfulOneQ:
 
 
     def check_status(self, retry_count, waiting_status, status, previous_status, timeout, task_id):
-        if (retry_count == 0):
-            print("During retry count = " + str(retry_count))
-            pytest.fail("Not enough retries. Retry count = " + str(retry_count))
-        elif (status == waiting_status):
+        if retry_count == 0:
+            print("During retry count = ", retry_count)
+            pytest.fail("Not enough retries. Retry count = ", retry_count)
+        elif status == waiting_status:
             print("The status is correct. During status = {}, waiting status = {}".format(status, waiting_status))
             assert (True), "The status is correct. Task status =  " + str(status)
             return
-        elif (status == previous_status):
+        elif status == previous_status:
             retry_count = retry_count - 1
             print("The status is incorrect. During status = {}, waiting status = {}. \nLet's try again. During retry count = {}".format(status, waiting_status, retry_count))
             time.sleep(timeout)

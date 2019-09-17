@@ -50,12 +50,12 @@ class TestExample:
         }
         response = client.create_task(data)
         jsonData = response.json()
-        assert jsonData['error'] == "No 'Tesla K80' GPU in cluster", "Отсутствует ожидаемая ошбика, что количество cpu превышает дозволенное значение."
+        assert jsonData['error'] == "No 'Tesla K80' GPU in cluster", "Отсутствует ожидаемая ошбика, что количество gpu превышает дозволенное значение."
 
 
     # @pytest.mark.in_progress
     def test_create_simple_task(self, client):
-        # version_status = client.check_version()
+        version_status = client.check_version()
         data = {
             "command":"echo 1"
         }
@@ -82,7 +82,7 @@ class TestExample:
         assert response.status_code == 404, "Код запроса не равен ожидаемому 404. Код запроса = {}".format(response.status_code)
         assert jsonData['error'] == "Task not found", "Отсутствует ожидаемая ошбика 'Задача с id = '{}'' не найдена'".format(bad_id)
 
-    @pytest.mark.in_progress
+    # @pytest.mark.in_progress
     def test_check_task_statuses(self, client):
         # version_status = client.check_version()
         data = {
@@ -93,14 +93,14 @@ class TestExample:
         print("Task is create!")
         jsonData1 = response1.json()
         assert response1.status_code == 201, "Код запроса не равен ожидаемому 201. Код запроса = {}".format(response1.status_code)
-        # print("/n jsonData1 = " + str(jsonData1))
+        # print("/n jsonData1 = ", jsonData1)
         assert 'task_id' in jsonData1, "В теле ответа отсутствует информация о task_id"
         task_id = jsonData1['task_id']
 
         # проверка статуса таски = 0
         response2 = client.get_task_by_id(task_id)
         jsonData2 = response2.json()
-        # print("/n jsonData2 = " + str(jsonData2))
+        # print("/n jsonData2 = ", jsonData2)
         assert jsonData2['status'] == 0, "Код задачи не равен 0. Код задачи = {}".format(jsonData2['status'])
 
         # проверка статуса таски = 100
